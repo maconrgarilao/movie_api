@@ -68,10 +68,6 @@ app.get('/movies', (req, res) => {
     res.json(topMovies);
 });
 
-app.listen(8080, () => {
-    res.send('Welcome to my app!');
-});
-
 app.get('/', (req, res) => {
     res.send('Welcome to my app!')
 });
