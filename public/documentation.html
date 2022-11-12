@@ -4,8 +4,96 @@
         <meta charset="utf-8">
         <title>DOCUMENTATION</title>
     </head>
+    <style>
+        table, th, td 
+        {
+            border: 1px solid black;
+        }
+    </style>
     <body>
-        <h1>Documentation Page</h1>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam vel dolorem accusantium aperiam culpa? Necessitatibus perspiciatis nulla quae? Sunt consequatur aut maiores ullam tenetur inventore nesciunt laborum explicabo, placeat veritatis?</p>
+        <h1>Movie API Documentation</h1>
+        <table>
+            <tr>
+                <th>Business Logic</th>
+                <th>URL</th>
+                <th>HTTP Method</th>
+                <th>Request body data format</th>
+                <th>Response body data format</th>
+            </tr>
+            <tr>
+                <td>Get list of movies</td>
+                <td>/movies</td>
+                <td>GET</td>
+                <td>None</td>
+                <td>A JSON object holding data about all the movies</td>
+            </tr>
+            <tr>
+                <td>Get data about a movie by Title</td>
+                <td>/movies/[Title]/</td>
+                <td>GET</td>
+                <td>None</td>
+                <td>A JSON object holding data about a movie containing a title and director. <br>Example:
+                    <br>{
+                        <br>Title: [Name],
+                        <br>Genre: [Type],
+                        <br>Director: [Name],
+                    <br>}
+                </td>
+            </tr>
+            <tr>
+                <td>Get data about a movie by Genre</td>
+                <td>/movies/[Title]/[Genre]/</td>
+                <td>GET</td>
+                <td>None</td>
+                <td>A JSON object holding data about a movie containing a title and director. <br>Example:
+                    <br>{
+                        <br>Title: [Name],
+                        <br>Genre: [Type],
+                        <br>Director: [Name],
+                    <br>}
+                </td>
+            </tr>
+            <tr>
+                <td>Get data about a movie by Director</td>
+                <td>/movies/directors/[DirectorName]/</td>
+                <td>GET</td>
+                <td>None</td>
+                <td>A JSON object holding data about a director. <br>Example:
+                    <br>{
+                        <br>Director Name: [Name],
+                        <br>Bio: [Description],
+                    <br>}
+                </td>
+            </tr>
+            <tr>
+                <td>Add a movie</td>
+                <td>/movies</td>
+                <td>POST</td>
+                <td>A JSON object holding data about a movie to add</td>
+                <td>A JSON object holding data about a movie that was added</td>
+            </tr>
+            <tr>
+                <td>Remove a movie by title</td>
+                <td>/movies/[Title]/</td>
+                <td>DELETE</td>
+                <td>None</td>
+                <td>A text message indicating whether the movie was succesfully removed from their list of favorites</td>
+            </tr>
+            <tr>
+                <td>Create username</td>
+                <td>/users</td>
+                <td>POST</td>
+                <td>None</td>
+                <td>A JSON object of a new user and id</td>
+            </tr>
+            <tr>
+                <td>Remove a user</td>
+                <td>/user/[id]/</td>
+                <td>DELETE</td>
+                <td>None</td>
+                <td>A text message indicating whether the user has been removed</td>
+            </tr>
+            
+        </table>
     </body>
 </html>
