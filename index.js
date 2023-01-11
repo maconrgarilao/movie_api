@@ -1,17 +1,39 @@
-const express = require('express');
+/* const express = require('express');
     app = express(),
     morgan = require('morgan'),
     bodyParser = require('body-parser'),
     uuid = require('uuid');
     //import built-in node and modules fs and path
     fs = require('fs'),
-    path = require('path');
+    path = require('path'); */
 
-app.use(bodyParser.json());
+const bodyParser = require("body-parser");
+const express = require("express");
+const app = express();
+const uuid = require("uuid");
+const morgan = require("morgan");
+const fs = require('fs');
+const path = require('path');
+const mongoose = require('mongoose');
+const Models = require('./models.js');
+
+const Movies = Models.Movie;
+const Users = Models.User;
+const Genres = Models.Genre;
+const Directors = Models.Director;
+
+mongoose.set('strictQuery', false);
+mongoose.connect("mongodb://localhost:27017/test", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+});
 
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {flags: 'a'})
 
-let users = [
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+/*let users = [
     {
         id: 1,
         name: 'Emir Garilao',
@@ -40,7 +62,9 @@ let movies = [
         'Director': {
             'Name': 'Zack Snyder',
             'Bio': 'Zachary Edward Snyder is an American film director, producer, screenwriter, and cinematographer. He made his feature film debut in 2004 with Dawn of the Dead, a remake of the 1978 horror film of the same name.',
-        }
+        },
+        'Image Path': "https://upload.wikimedia.org/wikipedia/en/5/5c/300poster.jpg",
+        'Featured': 'true'
     },
     {
         'Title': 'Notting Hill',
@@ -52,7 +76,9 @@ let movies = [
         'Director': {
             'Name': 'Roger Michell',
             'Bio': 'Roger Michell was a South African-born British theatre, television and film director. He was best known for directing films such as Notting Hill and Venus, as well as the 1995 made-for-television film Persuasion.',
-        }
+        },
+        'Image Path': "https://m.media-amazon.com/images/M/MV5BMTE5OTkwYzYtNDhlNC00MzljLTk1YTktY2IxZjliZmNjMjUzL2ltYWdlL2ltYWdlXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_FMjpg_UX1000_.jpg",
+        'Featured': 'false'
     },
     {
         'Title': 'Hachi: A Dog\'s Tale',
@@ -64,7 +90,9 @@ let movies = [
         'Director': {
             'Name': 'Lasse Hallstrom',
             'Bio': 'He first became known for directing almost all the music videos by the pop group ABBA, and subsequently became a feature film director.',
-        }
+        },
+        'Image Path': "https://www.sonypictures.com/sites/default/files/styles/max_560x840/public/chameleon/title-movie/233845_HachiDogsTale_2010_1400x2100_ENG.jpg?itok=B74hPEGN",
+        'Featured': 'false'
     },
     {
         'Title': 'National Treasure',
@@ -76,7 +104,9 @@ let movies = [
         'Director': {
             'Name': 'Jon Turteltaub',
             'Bio': 'He was born on August 8, 1963 and is an American film director and producer',
-        }
+        },
+        'Image Path': "https://m.media-amazon.com/images/M/MV5BMTY3NTc4OTYxMF5BMl5BanBnXkFtZTcwMjk5NzUyMw@@._V1_.jpg",
+        'Featured': 'false'
     },
     {
         'Title': 'Pan\'s Labyrinth',
@@ -88,7 +118,9 @@ let movies = [
         'Director': {
             'Name': 'Guillermo del Toro',
             'Bio': 'A Mexican filmmaker, author, and actor. He directed the Academy Award-winning fantasy films Pan\'s Labyrinth (2006) and The Shape of Water (2017), winning the Academy Awards for Best Director and Best Picture for the latter.',
-        }
+        },
+        'Image Path': "https://m.media-amazon.com/images/M/MV5BYzFjMThiMGItOWRlMC00MDI4LThmOGUtYTNlZGZiYWI1YjMyXkEyXkFqcGdeQXVyMjUzOTY1NTc@._V1_.jpg",
+        'Featured': 'false'
     },
     {
         'Title': 'Titanic',
@@ -100,7 +132,9 @@ let movies = [
         'Director': {
             'Name': 'James Cameron',
             'Bio': 'He is known for making science fiction and epic films, and first gained recognition for writing and directing The Terminator (1984). Cameron found further success with Aliens (1986), The Abyss (1989), Terminator 2: Judgment Day (1991), and the action comedy True Lies (1994). He also wrote and directed Titanic (1997) and Avatar (2009), with Titanic earning him Academy Awards in Best Picture, Best Director and Best Film Editing. Avatar, filmed in 3D technology, earned him nominations in the same categories.',
-        }
+        },
+        'Image Path': "https://upload.wikimedia.org/wikipedia/en/1/18/Titanic_%281997_film%29_poster.png",
+        'Featured': 'false'
     },
     {
         'Title': 'The Green Mile',
@@ -110,9 +144,11 @@ let movies = [
             'Definition': 'The drama genre is strongly based in a character, or characters, that are in conflict at a crucial moment in their lives. Most dramas revolve around families and often have tragic or painful resolutions.',
         },
         'Director': {
-            'Name': 'Frank Darabont',
-            'Bio': 'He is an American film director, scrrenwriter and producer. He has been nominated for three Academy Awards and a Golden Globe Award. In his early career, he was primarily a screenwriter for such horror films as A Nightmare on Elm Street 3: Dream Warriors (1987), The Blob (1988) and The Fly II (1989). As a director, he is known for his film adaptations of Stephen King novellas and novels, such as The Shawshank Redemption (1994), The Green Mile (1999), and The Mist (2007).',
-        }
+            'Name': 'James Cameron',
+            'Bio': 'He is known for making science fiction and epic films, and first gained recognition for writing and directing The Terminator (1984). Cameron found further success with Aliens (1986), The Abyss (1989), Terminator 2: Judgment Day (1991), and the action comedy True Lies (1994). He also wrote and directed Titanic (1997) and Avatar (2009), with Titanic earning him Academy Awards in Best Picture, Best Director and Best Film Editing. Avatar, filmed in 3D technology, earned him nominations in the same categories.',
+        },
+        'Image Path': "https://m.media-amazon.com/images/M/MV5BMTUxMzQyNjA5MF5BMl5BanBnXkFtZTYwOTU2NTY3._V1_FMjpg_UX1000_.jpg",
+        'Featured': 'false'
     },
     {
         'Title': 'Ella Enchanted',
@@ -124,7 +160,9 @@ let movies = [
         'Director': {
             'Name': 'Tommy O\'Haver',
             'Bio': 'An AMerican film director and screenwriter who grew up in Carmel, Indiana, a suburb of Indianapolis.'
-        }
+        },
+        'Image Path': "https://m.media-amazon.com/images/M/MV5BZGI1MjMzMWEtZDc3Ni00Y2RiLTllOGQtMTVlZjRkOGE3MGNlXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_FMjpg_UX1000_.jpg",
+        'Featured': 'false'
     },
     {
         'Title': 'Taken',
@@ -136,7 +174,9 @@ let movies = [
         'Director': {
             'Name': 'Pierre Morel',
             'Bio': 'He is a French film director and cinematographer. His work includes District 13, From Paris with Love, and Taken.',
-        }
+        },
+        'Image Path': "https://m.media-amazon.com/images/M/MV5BMTM4NzQ0OTYyOF5BMl5BanBnXkFtZTcwMDkyNjQyMg@@._V1_FMjpg_UX1000_.jpg",
+        'Featured': 'false'
     },
     {
         'Title': 'Olympus Has Fallen',
@@ -148,138 +188,108 @@ let movies = [
         'Director': {
             'Name': 'Antoine Fuqua',
             'Bio': 'He is an American filmmaker, known for his work in the action and thriller genres. He was originally known as a director of music videos, and made his film debut in 1998 with The Replacement Killers. His critical breakthrough was the award-winning 2001 crime thriller Training Day.'
-        }
+        },
+        'Image Path': "https://m.media-amazon.com/images/M/MV5BNTU0NmY4MWYtNzRlMS00MDkxLWJkODYtOTM3NGI2ZDc1NTJhXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_FMjpg_UX1000_.jpg",
+        'Featured': 'false'
     }
 ];
+*/
 
 app.use(morgan('common', {stream: accessLogStream,}));
 app.use(express.static('public'));
 
-//GET requests
+//Default text response
 app.get('/', (req, res) => {
-    res.send('Welcome to myFlix API!');
+    res.send('Welcome to MyFlix!');
 });
 
 //CREATE
 app.post('/users', (req, res) => {
-    const newUser = req.body;
+    Users.findOne({ Username: req.body.Username })
+    .then((user) => {
+        if (user) {
+            return res.status(400).send(req.body.Username + 'already exists');
+        } else {
+            Users
+            .create({
+                Username: req.body.Username,
+                Password: req.body.Password,
+                Email: req.body.Email,
+                Birthday: req.body.Birthday
+            })
+            .then((user) =>{res.status(201).json(user) })
+            .catch((error) => {
+                console.error(error);
+                res.status(500).send('Error: ' + error);
+            })
+        }
+    })
+    .catch((error) => {
+        console.error(error);
+        res.status(500).send('Error: ' + error);
+    });
+});
 
-    if (newUser.name) {
-        newUser.id = uuid.v4();
-        users.push(newUser);
-        res.status(201).json(newUser)
-    } else {
-        res.status(400).send('users need names')
-    }
+//Get all users
+app.get('/users', (req, res) => {
+    Users.find()
+    .then((users) => {
+        res.status(201).json(users);
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+    });
+});
 
-})
+//Get a user by username
+app.get('/users/:Username', (req, res) => {
+    Users.findOne({ Username: req.params.Username })
+    .then((user) => {
+        res.json(user);
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+    });
+});
 
 //UPDATE
-app.put('/users/:id', (req, res) => {
-    const { id } = req.params;
-    const updatedUser = req.body;
-
-    let user = users.find( user => user.id == id );
-
-    if (user) {
-        user.name = updatedUser.name;
-        res.status(200).json(user);
-    } else {
-        res.status(400).send('no such user')
+app.put('/users/:Username', (req, res) => {
+    Users.findOneAndUpdate({ Username: req.params.Username }, { $set:
+    {
+        Username: req.body.Username,
+        Password: req.body.Password,
+        Email: req.body.Email,
+        Birthday: req.body.Birthday
     }
-})
-
-//CREATE
-app.post('/users/:id/:movieTitle', (req, res) => {
-    const { id, movieTitle } = req.params;
-    
-
-    let user = users.find( user => user.id == id );
-
-    if (user) {
-        user.favoriteMovies.push(movieTitle);
-        res.status(200).send(`${movieTitle} has been added to user ${id}'s array`);
+},
+{ new: true }, //This line makes sure that the updated document is returned
+(err, updatedUser) => {
+    if(err) {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
     } else {
-        res.status(400).send('no such user')
-    }
-})
-
-//DELETE
-app.delete('/users/:id/:movieTitle', (req,res) => {
-    const { id, movieTitle } = req.params;
-
-    let user = users.find( user => user.id == id );
-
-    if (user) {
-        user.favoriteMovies = user.favoriteMovies.filter( title => title !== movieTitle);
-        res.status(200).send(`${movieTitle} has been removed from user ${id}'s array`);
-    } else {
-        res.status(400).send('no such user')
+        res.json(updatedUser);
     }
 });
-
-//DELETE
-app.delete('/users/:id', (req,res) => {
-    const { id } = req.params;
-
-    let user = users.find( user => user.id == id );
-
-    if (user) {
-        user = users.filter( user => user.id != id);
-        res.status(200).send(`user ${id} has been deleted`);
-    } else {
-        res.status(400).send('no such user')
-    }
 });
 
-//READ
-app.get('/movies', (req, res) => {
-    res.status(200).json(movies);
-})
-
-//READ
-app.get('/movies/:title', (req, res) => {
-    const { title } = req.params;
-    const movie = movies.find( movie => movie.Title === title );
-
-    if (movie) {
-        res.status(200).json(movie);
-    } else {
-        res.status(400).send('no such movie')
-    }
-})
-
-//READ
-app.get('/movies/genre/:genreName', (req, res) => {
-    const { genreName } = req.params;
-    const genre = movies.find( movie => movie.Genre.Name === genreName ).Genre;
-
-    if (genre) {
-        res.status(200).json(genre);
-    } else {
-        res.status(400).send('no such genre')
-    }
-})
-
-//READ
-app.get('/movies/directors/:directorName', (req, res) => {
-    const { directorName } = req.params;
-    const director = movies.find( movie => movie.Director.Name === directorName ).Director;
-
-    if (director) {
-        res.status(200).json(director);
-    } else {
-        res.status(400).send('no such director')
-    }
-})
-
-//app.get('/documentation', (req, res) => {
-//    res.sendFile('public/documentation.html', { root: __dirname });
-//});
-
-//app.get('/movies', (req, res) => {
-//    res.json(topMovies);
-//});
+//Add a movie to a user's list of favorites
+app.post('users/:Username/movies/:MovieID', (req, res) => {
+    Users.findOneAndUpdate({ Username: req.params.Username }, {
+        $push: { FavoriteMovies: req.params.MovieID }
+    },
+    { new: true }, // This line makes sure that the updated document is returned
+    (err, updatedUser) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error: ' + err);
+        } else {
+            res.json(updatedUser);
+        }
+    });
+});
 
 Error
 app.use((err, req, res, next) => {
@@ -287,7 +297,97 @@ app.use((err, req, res, next) => {
     res.status(500).send('There was an error. Please try again later.');
 });
 
+//DELETE a movie to a user's list of favorites
+app.delete('/users/:Username/movies/:MovieID', (req, res) => {
+    Users.findOneAndUpdate({ Username: req.params.Username }, {
+        $pull: { FavoriteMovies: req.params.MovieID }
+    },
+    { new: true }, // This line makes sure that the updated document is returned
+    (err, updatedUser) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error: ' + err);
+        } else {
+            res.json(updatedUser);
+        }
+    });
+});
+
+//DELETE a user by username
+app.delete('/users/:Username', (req, res) => {
+    Users.findOneAndRemove({ Username: req.params.Username })
+    .then((user) => {
+        if (!user) {
+            res.status(400).send(req.params.Username + ' was not found');
+        } else {
+            res.status(200).send(req.params.Username + ' was deleted');
+        }
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+    });
+});
+
+//GET all movies
+app.get('/movies', (req, res) => {
+    Movies.find()
+    .then((movies) => {
+        res.status(200).json(movies);
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+    });
+});
+
+//GET a movie by title
+app.get('/movies/:Title', (req, res) => {
+    Movies.findOne({ Title: req.params.Title })
+    .then((movie) => {
+        res.json(movie);
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+    });
+});
+
+//GET a movie by genre
+app.get('/movies/genre/:genreName', (req, res) => {
+    Movies.findOne({ 'Genre.Name': req.params.genreName })
+    .then((movie) => {
+        res.json(movie.Genre);
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error ' + err);
+    });
+});
+
+//GET a movie by director
+app.get('/movies/director/:directorName', (req, res) => {
+    Movies.findOne({ 'Director.Name': req.params.directorName })
+    .then((movie) => {
+        res.json(movie.Director);
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error ' + err);
+    });
+});
+
+app.get('/documentation', (req, res) => {
+    res.sendFile('public/documentation.html', { root: __dirname });
+});
+
+//Error
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('There was an error. Please try again later.');
+});
+
 //listen for requests
-app.listen(8080, () => {
-    console.log('Your app is listening on port 8080.');
+app.listen(3000, () => {
+    console.log('Your app is listening on port 3000.');
 });
