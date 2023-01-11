@@ -25,73 +25,115 @@
                 <td>/movies</td>
                 <td>GET</td>
                 <td>None</td>
-                <td>A JSON object holding data about all the movies</td>
+                <td>A JSON object holding data about all the movies.
+                </td>
             </tr>
             <tr>
                 <td>Get data about a movie by Title</td>
                 <td>/movies/[Title]/</td>
                 <td>GET</td>
                 <td>None</td>
-                <td>A JSON object holding data about a movie containing a title and director. <br>Example:
+                <td>A JSON object holding data about a movie containing a title <br>Example:
                     <br>{
-                        <br>Title: [Name],
-                        <br>Genre: [Type],
-                        <br>Director: [Name],
+                        <br>Genre: [
+                        <br>Name: _____,
+                        <br>Definition: _____,
+                        <br>],
+                        <br>
+                        <br>
+                        Director: [
+                        <br>Name: _____,
+                        <br>Bio: _____,
+                        <br>],
+                        <br>
+                        <br>
+                        MovieID: _____,
+                        <br>
+                        Movie Title: _____,
+                        <br>
+                        Description: _____,
+                        <br>
+                        Image Path: (image url),
+                        <br>
+                        Featured: true or false
                     <br>}
                 </td>
             </tr>
             <tr>
                 <td>Get data about a movie by Genre</td>
-                <td>/movies/[Title]/[Genre]/</td>
+                <td>/movies/genre/[Genre]/</td>
                 <td>GET</td>
                 <td>None</td>
                 <td>A JSON object holding data about a movie containing a title and director. <br>Example:
                     <br>{
-                        <br>Title: [Name],
-                        <br>Genre: [Type],
-                        <br>Director: [Name],
+                        <br>Name: _____,
+                        <br>Definition: _____,
                     <br>}
                 </td>
             </tr>
             <tr>
                 <td>Get data about a movie by Director</td>
-                <td>/movies/directors/[DirectorName]/</td>
+                <td>/movies/director/[DirectorName]/</td>
                 <td>GET</td>
                 <td>None</td>
                 <td>A JSON object holding data about a director. <br>Example:
                     <br>{
-                        <br>Director Name: [Name],
-                        <br>Bio: [Description],
+                        <br>Name: _____,
+                        <br>Bio: _____,
                     <br>}
                 </td>
             </tr>
             <tr>
-                <td>Add a movie</td>
-                <td>/movies</td>
+                <td>Add a movie to a user's list</td>
+                <td>/users/[Username]/movies/[MovieID]</td>
                 <td>POST</td>
                 <td>A JSON object holding data about a movie to add</td>
                 <td>A JSON object holding data about a movie that was added</td>
             </tr>
             <tr>
-                <td>Remove a movie by title</td>
-                <td>/movies/[Title]/</td>
+                <td>Remove a movie to a user's list</td>
+                <td>/users/[Username]/movies/[MovieID]</td>
                 <td>DELETE</td>
                 <td>None</td>
-                <td>A text message indicating whether the movie was succesfully removed from their list of favorites</td>
+                <td>A JSON object holding data about updated user's list. <br>Example:
+                    <br>{
+                        <br>Movie ID: _____,
+                        <br>Username: _____,
+                        <br>Password: _____,
+                        <br>Email: _____,
+                        <br>Birthday: _____,
+                        <br>Favorite Movies: list less the removed movie
+                </td>
             </tr>
             <tr>
                 <td>Create username</td>
                 <td>/users</td>
                 <td>POST</td>
                 <td>None</td>
-                <td>A JSON object of a new user and id</td>
+                <td>A JSON object of a new user and id. <br>Example:
+                    <br>{
+                        <br>Username: _____,
+                        <br>Password: _____,
+                        <br>Email: _____,
+                        <br>Birthday: _____,
+                        <br>Favorite Movies: _____,
+                        <br>User ID: _____,
+                </td>
             </tr>
             <tr>
                 <td>Remove a user</td>
-                <td>/user/[id]/</td>
+                <td>/users/[Username]/</td>
                 <td>DELETE</td>
                 <td>None</td>
-                <td>A text message indicating whether the user has been removed</td>
+                <td>A text message indicating whether the user was deleted</td>
+            </tr>
+            <tr>
+                <td>Update username</td>
+                <td>/users/[Username]</td>
+                <td>PUT</td>
+                <td>None</td>
+                <td>A JSON object of an updated details
+                </td>
             </tr>
             
         </table>
