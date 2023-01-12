@@ -87,3 +87,6 @@ Timestamp: Tue Oct 25 2022 16:19:49 GMT-0400 (Eastern Daylight Time)
 ::1 - - [11/Jan/2023:21:39:22 +0000] "GET /users HTTP/1.1" 201 917
 ::1 - - [11/Jan/2023:21:40:05 +0000] "DELETE /users/davidyam HTTP/1.1" 200 20
 ::1 - - [11/Jan/2023:21:45:34 +0000] "PUT /users/StubbyG HTTP/1.1" 200 176
+::1 - - [12/Jan/2023:00:10:32 +0000] "POST /users/gelairicafort/movies/639894ec2bb09b67ea11758b HTTP/1.1" 404 191
+::1 - - [12/Jan/2023:00:15:31 +0000] "POST /users/gelairicafort/movies/639894ec2bb09b67ea11758b HTTP/1.1" 404 191
+::1 - - [12/Jan/2023:00:28:39 +0000] "POST /users/gelairicafort/movies/639894ec2bb09b67ea11758b HTTP/1.1" 200 203

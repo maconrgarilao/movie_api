@@ -276,7 +276,7 @@ app.put('/users/:Username', (req, res) => {
 });
 
 //Add a movie to a user's list of favorites
-app.post('users/:Username/movies/:MovieID', (req, res) => {
+app.post('/users/:Username/movies/:MovieID', (req, res) => {
     Users.findOneAndUpdate({ Username: req.params.Username }, {
         $push: { FavoriteMovies: req.params.MovieID }
     },
@@ -289,12 +289,6 @@ app.post('users/:Username/movies/:MovieID', (req, res) => {
             res.json(updatedUser);
         }
     });
-});
-
-Error
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('There was an error. Please try again later.');
 });
 
 //DELETE a movie to a user's list of favorites
