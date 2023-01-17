@@ -24,7 +24,7 @@ const Genres = Models.Genre;
 const Directors = Models.Director;
 
 mongoose.set('strictQuery', false);
-mongoose.connect("mongodb://localhost:27017/test", {
+mongoose.connect( process.env.CONNECTION_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
