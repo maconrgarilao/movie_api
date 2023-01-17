@@ -11,6 +11,7 @@ const bodyParser = require("body-parser");
 const express = require("express");
 const app = express();
 const uuid = require("uuid");
+const { check, validationResult } = require('express-validator');
 const morgan = require("morgan");
 const fs = require('fs');
 const path = require('path');
@@ -32,6 +33,9 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {f
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+const cors = require('cors');
+app.use(cors());
 
 let auth = require('./auth')(app);
 
@@ -209,16 +213,32 @@ app.get('/', (req, res) => {
 });
 
 //CREATE
-app.post('/users', (req, res) => {
-    Users.findOne({ Username: req.body.Username })
+app.post('/users',
+    [
+        check('Username', 'Username is required').isLength({min: 5}),
+        check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+        check('Password', 'Password is required.').not().isEmpty(),
+        check('Email', 'Email does not appear to be valid').isEmail()
+    ], (req, res) => {
+    
+    //check the validation object for errors
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+
+    let hashedPassword = Users.hashPassword(req.body.Password);
+    Users.findOne({ Username: req.body.Username }) //Search to see if a user with the requested username already exists
     .then((user) => {
         if (user) {
+            //If the user is found, send a response that it already exists
             return res.status(400).send(req.body.Username + 'already exists');
         } else {
             Users
             .create({
                 Username: req.body.Username,
-                Password: req.body.Password,
+                Password: hashedPassword,
                 Email: req.body.Email,
                 Birthday: req.body.Birthday
             })
@@ -260,18 +280,34 @@ app.get('/users/:Username', passport.authenticate('jwt', { session: false }), (r
 });
 
 //UPDATE
-app.put('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.put('/users/:Username', 
+    [
+        check('Username', 'Username is required').isLength({min: 5}),
+        check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+        check('Password', 'Password is required').not().isEmpty(),
+        check('Email', 'Email does not appear to be valid').isEmail(),
+        passport.authenticate('jwt', { session: false }),
+    ], (req, res) => {
+
+    //check validation for errors
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+    
+    let hashedPassword = Users.hashPassword(req.body.Password);
     Users.findOneAndUpdate({ Username: req.params.Username }, { $set:
     {
         Username: req.body.Username,
-        Password: req.body.Password,
+        Password: hashedPassword,
         Email: req.body.Email,
-        Birthday: req.body.Birthday
-    }
+        Birthday: req.body.Birthday,
+    },
 },
 { new: true }, //This line makes sure that the updated document is returned
 (err, updatedUser) => {
-    if(err) {
+    if (err) {
         console.error(err);
         res.status(500).send('Error: ' + err);
     } else {
@@ -387,6 +423,7 @@ app.use((err, req, res, next) => {
 });
 
 //listen for requests
-app.listen(3000, () => {
-    console.log('Your app is listening on port 3000.');
+const port = process.env.PORT || 3000;
+app.listen(port, '0.0.0.0',() => {
+    console.log('Listen on Port ' + port);
 });
