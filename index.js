@@ -35,7 +35,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const cors = require('cors');
-let allowedOrigins = ['http://localhost:3000', 'http://localhost:1234', 'https://myplix.netlify.app/'];
+let allowedOrigins = ['http://localhost:3000', 'http://localhost:1234', 'https://myplix.herokuapp.com/', 'https://myplix.netlify.app/'];
 
 app.use(cors({
     origin: (origin, callback) => {
